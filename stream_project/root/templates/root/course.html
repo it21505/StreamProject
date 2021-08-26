@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+{% load static %}
+
+<head>
+  <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'root/css/styles.css' %}">
+  <title>Course</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">StreamWebsite</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'index' %}"><span class="fa fa-home fa-lg"></span> Home<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item  active">
+          <a class="nav-link" href="{% url 'streams' %}"><span class="fa fa-tv fa-lg"></span> Streams</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'broadcast' %}"><span class="fa fa-video-camera fa-lg"></span> Broadcast</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}"><span class="fa fa-address-card fa-lg"></span> Contact</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        {% if request.user.is_authenticated %}
+        <span class="navbar-text">Logged in as <a style="color: rgba(97, 97, 97, 0.9);" href="{% url 'profile' %}"><b>{{request.user}}</b></a></span>
+        <a class="nav-link text-danger" href="{% url 'logout' %}"><span class="fa fa-sign-out fa-lg"></span></a>
+        {% else %}
+        <li class="nav-item active">
+          <a class="nav-link" href="{% url 'login' %}">Login <span class="fa fa-sign-in fa-lg"></span></a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <header class="jumbotron">
+    <div class="container">
+      <div class="row">
+        <div class="col-12 col-sm-8">
+          <h1><b>{{course.name}}</b></h1>
+        </div>
+      </div>
+    </div>
+  </header>
+
+ 
+  <div class="container">
+      <div class="row">
+          <div class="col-12">
+            <table class="table table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Video Name</th>
+                  <th scope="col">Teacher Name</th>
+                  <th scope="col">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for video in videos %}
+                <tr class='clickable-row' style="cursor: pointer;" data-href="{% url 'video' course.link video.video_code%}">
+                  <th scope="row">1</th>
+                  <td><b>{{video.video_name}}</b></td>
+                  <td>{{video.teacher_name}}</td>
+                  <td>{{video.date}}</td>
+                </tr>
+                {% endfor %}
+              
+                
+              </tbody>
+            </table>
+          </div>
+    
+      </div>
+  </div>
+
+<footer class="footer bg-light mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-4 offset-1 col-sm-2 mt-5">
+        <h4>Links</h4>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'streams' %}">Streams</a></li>
+          <li><a href="{% url 'contact' %}">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-7 col-sm-5 mt-5">
+        <h4>Our Address</h4>
+        <address class="address-footer">
+          Harokopio University of Athens <br>
+          Omirou 9, Kalithea<br>
+          Athens, Greece<br>
+          <i class="fa fa-phone fa-lg"></i> +210 1234 5678<br>
+          <i class="fa fa-fax fa-lg"></i> +210 8765 4321<br>
+          <i class="fa fa-envelope fa-lg"></i> <a href="mailto:hua@hua.gr">hua@hua.gr</a>
+        </address>
+      </div>
+      <div class="col-12 col-sm-4 align-self-center">
+        <div class="text-center">
+          <a class="btn btn-social-icon btn-google" href="http://google.com/+"><i
+              class="fa fa-google-plus fa-lg"></i></a>
+          <a class="btn btn-social-icon btn-facebook" href="http://www.facebook.com/profile.php?id="><i
+              class="fa fa-facebook fa-lg"></i></a>
+          <a class="btn btn-social-icon btn-linkedin" href="http://www.linkedin.com/in/"><i
+              class="fa fa-linkedin fa-lg"></i></a>
+          <a class="btn btn-social-icon btn-twitter" href="http://twitter.com/"><i
+              class="fa fa-twitter fa-lg"></i></a>
+          <a class="btn btn-social-icon btn-google" href="http://youtube.com/"><i class="fa fa-youtube fa-lg"></i></a>
+          <a class="btn btn-social-icon " href="mailto:hua@hua.gr"><i class="fa fa-envelope-o fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center mt-4">
+    <div class="col-auto">
+      <p>© Copyright 2018 Harokopio University of Athens</p>
+    </div>
+  </div>
+  </div>
+</footer>
+
+
+  <!--Bootstrap autoplay-->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+    <!--Video.js-->
+  <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
+  <script>
+    var player = videojs('#player');
+  </script>
+
+<script>
+  $(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.location = $(this).data("href");
+    });
+  });
+</script>
+</body>
+
+</html>

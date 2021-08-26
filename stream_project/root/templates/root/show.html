@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    <link href="https://vjs.zencdn.net/7.10.2/video-js.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'root/css/styles.css' %}">
+    <title>Dashboard</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">StreamWebsite</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'index' %}"><span class=" fa fa-home fa-lg"></span> Home<span
+                            class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'streams' %}"><span class=" fa fa-tv fa-lg"></span> Streams</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'broadcast' %}"><span class="fa fa-video-camera fa-lg"></span> Broadcast</a>
+                  </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'contact' %}"><span class="fa fa-address-card fa-lg"></span>
+                        Contact</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                {% if request.user.is_authenticated %}
+                <span class="navbar-text">Logged in as <a style="color: rgba(97, 97, 97, 0.9);" href="{% url 'profile' %}"><b>{{request.user}}</b></a></span>
+                <a class="nav-link text-danger" href="{% url 'logout' %}"><span class="fa fa-sign-out fa-lg"></span></a>
+                {% else %}
+                <li class="nav-item active">
+                    <a class="nav-link" href="accounts/login/">Login <span class="fa fa-sign-in fa-lg"></span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="row">
+        <div class="col-sm-9">
+            <div class="container-content">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <video id="player" class="video-js vjs-default-skin" height="260" width="450" autoplay
+                            preload="auto">
+                            <source src="http://192.168.1.9:8080/hls/{{stream.stream_key}}.m3u8" type="application/x-mpegURL" />
+                        </video>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <h5 style="color: gray;font-size: 13px; margin-bottom: 0px;"><b>Title</b></h5>
+                        <p style="font-size: 23px; font-weight: 550;">{{stream.stream_name}}</p>
+                        <h5 style="color: gray;font-size: 13px; margin-bottom: 0px;"><b>Teacher</b></h5>
+                        <p style="font-size: 21px; font-weight: 350;">{{stream.teacher_name}}</p>
+                        <h5 style="color: gray;font-size: 13px; margin-bottom: 0px;"><b>Course</b></h5>
+                        <p style="font-size: 21px; font-weight: 350;">{{stream.course_name}}</p>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-outline-dark" data-toggle="modal" data-target="#editModal">EDIT</button>
+                            </div>
+                            <div class="col">
+                                <button type="button" name="btn_live" id="btn_live" class="btn btn-danger">GO LIVE</button>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
+                <hr>
+                <div class="row">
+
+                    <div class="col-12 col-sm-4">
+                        <h4>Stream Settings</h4>
+                        <h5 style="font-size: 15px; font-weight: 600">Stream Key</h5>
+                        <label for="streamKey" style="font-size: 13px; font-weight: 500">Stream Key (paste in
+                            encoder)</label>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" id="copy1" class="form-control" id="streamKey" placeholder="Stream Key"
+                                    value="{{stream.stream_key}}" readonly>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" onclick="copy1()" class="btn btn-outline-secondary"><b>COPY</b></button>
+                            </div>
+                        </div>
+                        <label for="streamUrl" style="font-size: 13px; font-weight: 500">Stream Code</label>
+                        <div class="form-group row">
+                            <div class="col-sm-10">
+                                <input type="text" id="copy2" class="form-control" id="streamUrl" placeholder="Stream URL"
+                                    value="{{stream.stream_code}}" readonly>
+                            </div>
+                            <div class="col-sm-2">
+                                <button type="button" onclick="copy2()" class="btn btn-outline-secondary"><b>COPY</b></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-12 col-sm-3" style="margin-top: 20px;">
+            <div class="chatroom" style="height: 90%;">
+                <div class="chatroom-header">
+                    <h3 style="font-weight: 600">Chat</h3>
+                </div>
+                <div class="chatroom-log" id="chat-log"></div>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" id="chat-message-input" class="form-control" placeholder="Type message ..."
+                    aria-label="Type message ..." aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" id="chat-message-submit" type="button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel" style="text-align: center;">Edit stream</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                  <label for="id_stream_name">Stream Name</label>
+                  <input type="text" class="form-control" id="id_stream_name" name="stream_name" placeholder="Stream Name" value="{{stream.stream_name}}">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-7">
+                    <label for="id_teacher_name">Teacher Name</label>
+                    <input type="text" class="form-control" id="id_teacher_name" name="teacher_name" placeholder="Teacher Name" value="{{stream.teacher_name}}">
+                  </div>
+                  <div class="form-group col-md-5">
+                    <label for="id_course_name">Course</label>
+                    <select class="form-control" id="id_course_name" name="course_name">
+                        <option selected="selected">{{ stream.course_name }}</option>
+                        {% for course in courses %}
+                        {% if course.name != stream.course_name %}
+                        <option value="{{ course.name }}">{{ course.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div class="modal-footer" style="padding-bottom: 0;padding-right: 0;">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+            </form>          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>
+        function copy1(){
+            var copyText1 = document.getElementById("copy1");
+            copyText1.select(); 
+            document.execCommand("copy");
+        }
+        
+        function copy2(){
+            var copyText2 = document.getElementById("copy2");
+            copyText2.select(); 
+            document.execCommand("copy");
+        }
+
+    </script>
+
+<script>
+    $("#btn_live").on('click', function () {
+      $.ajax({
+        method:'POST',
+        url: '/ajax/',
+        data: {
+          'csrfmiddlewaretoken': $('input[name="csrfmiddlewaretoken"]').val(),
+          'stream_id': '{{stream.id}}'
+        },
+        dataType: 'json',
+        success: function (data) {
+          if (data.success) {
+            alert("ajax call success.");
+          }else{
+            alert("ajax call not success.");
+          }
+        }
+      });
+      if ($(this).text() == 'GO LIVE'){
+        $(this).text('CLOSE STREAM')
+        $(this).removeClass('btn-danger')
+        $(this).addClass('btn-dark')
+      }else{
+        $(this).text('GO LIVE')
+        $(this).removeClass('btn-dark')
+        $(this).addClass('btn-danger')
+      }
+    });
+  </script>
+    <script type="text/javascript">
+        window.onbeforeunload = confirmExit;
+        function confirmExit()
+        {
+          return "Do you want to leave this page without saving?";
+        }
+      </script>
+
+<!--
+{{ stream_link|json_script:"course-name" }}
+<script>
+    const courseName = JSON.parse(document.getElementById('course-name').textContent);
+    const username = "{{request.user}}";
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + courseName
+        + '/'
+    );
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if(data.message != ""){
+        document.querySelector('#chat-log').innerHTML += ("<b>" + username + "</b>  " + data.message + '<br>');
+        }
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    document.querySelector('#chat-message-input').focus();
+    document.querySelector('#chat-message-input').onkeyup = function(e) {
+        if (e.keyCode === 13) {  // enter, return
+            document.querySelector('#chat-message-submit').click();
+        }
+    };
+
+    document.querySelector('#chat-message-submit').onclick = function(e) {
+        const messageInputDom = document.querySelector('#chat-message-input');
+        const message = messageInputDom.value;
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+        messageInputDom.value = '';
+    };
+</script>
+
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+        -->
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <!--Video.js-->
+    <script src="https://vjs.zencdn.net/7.10.2/video.js"></script>
+    <script>
+        var player = videojs('#player');
+        videojs.options.autoplay = true
+    </script>
+</body>
+
+</html>

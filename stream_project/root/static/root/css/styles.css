@@ -1,0 +1,96 @@
+.row-content {
+    margin: 0px auto;
+    padding: 50px 0px;
+    min-height: 200px; 
+}
+
+.profile {
+    color: rgba(115, 109, 109, 0.9);
+}
+  
+.dark-green{
+    background-color: #093426;
+    color: #E7F3EF;
+}
+
+.light-green{
+    background-color:#448D76;
+    color:#23483C;
+}
+
+.white-green{
+    background-color:#79BEA8;
+}
+
+.address-footer{
+    font-size:90%;
+    margin:0px;
+    color:#0f0f0f;
+}
+
+.map-container{
+    overflow:hidden;
+    padding-bottom:56.25%;
+    position:relative;
+    height:0;
+}
+
+.map-container iframe{
+    left:0;
+    top:0;
+    height:100%;
+    width:100%;
+    position:absolute;
+}
+
+.dark-grey{
+    background-color:#A8A8A8;
+}
+
+.light-grey{
+    background-color: #B8B8B8;
+}
+
+.chatroom{
+    width: 100%;
+    height: 520px;
+    right:0px;
+    border :1px solid lightgrey;
+    margin:0;
+    border-radius: 3px;
+    background: #e9ecef; 
+}
+
+.chatroom-header{
+    background: white;
+    width: 100%;
+    height: 45px;
+    text-align: center;
+}
+
+.chatroom-log{
+    margin-left: 15px;
+    margin-top: 5px;
+    max-height: 465px;
+    font-size: 16px;
+    overflow-y: auto;
+}
+
+.chatroom-input{
+   position: absolute;
+   bottom: -10%;
+}
+
+.container-content{
+    background: #e9ecef; 
+    margin:20px;  
+    padding:25px; 
+}
+
+.hide-text {
+    width: 70px;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+  }
